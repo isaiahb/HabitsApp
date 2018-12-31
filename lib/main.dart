@@ -25,7 +25,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
@@ -81,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: new Icon(Icons.add),
       ),
 
-
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -112,9 +110,7 @@ class HabitList extends StatefulWidget {
   List<Habit> habits;
   final String title;
 
-
   HabitList({this.habits = const [], this.title= "Habit Name"});
-
   @override
   State<StatefulWidget> createState()=> HabitListState();
 
@@ -124,9 +120,7 @@ class HabitList extends StatefulWidget {
 class HabitListState extends State<HabitList> {
 
   Widget _getWidgetList() {
-
     List<HabitWidget> widgets = new List();
-
     for (Habit habit in widget.habits)
       widgets.add(HabitWidget(habit));
 
@@ -134,7 +128,6 @@ class HabitListState extends State<HabitList> {
       children: widgets,
       shrinkWrap: true,
     );
-
   }
 
 
@@ -193,21 +186,22 @@ class _HabitWidgetState extends State<HabitWidget> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Rename -${widget.habit.name}"),
+          title: Text("Rename - ${widget.habit.name}"),
           content: TextField(
             controller: renameController,
           ),
 
           actions: <Widget>[
             new FlatButton(
-                child: Text("Confirm"),
+                child: Text("Confirm", style: TextStyle(color:Colors.green)),
                 onPressed: (){
                   _rename();
                 }
             ),
 
             FlatButton(
-              child: Text("Cancel"),
+              color: Colors.red,
+              child: Text("Cancel", style: TextStyle(color:Colors.white)),
               onPressed: (){print("cancel");},
             )
           ],
@@ -224,7 +218,9 @@ class _HabitWidgetState extends State<HabitWidget> {
       trailing: RaisedButton(
           color: Colors.red,
           child:Text("RIP", style: TextStyle(color: Colors.white),),
-          onPressed: ()=>print("Rip")),
+          onPressed: ()=>print("Rip")
+      ),
+
       children: <Widget>[
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -234,8 +230,8 @@ class _HabitWidgetState extends State<HabitWidget> {
               Expanded(flex:4, child: RaisedButton(
                   child:Text("Rename", style:TextStyle(color:Colors.white)),
                   color: Colors.green,
-                  onPressed: _onEditPressed)
-              ),
+                  onPressed: ()=> _showRenameDialog(context)
+              )),
 
               Spacer(),
               Expanded(flex:4, child: RaisedButton(

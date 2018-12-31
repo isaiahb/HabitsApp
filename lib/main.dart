@@ -167,12 +167,89 @@ class HabitWidget extends StatefulWidget {
 
 class _HabitWidgetState extends State<HabitWidget> {
 
+  void _onEditPressed() => print("editting");
+  void _onDeletePressed() => print("deleting");
+
+  Widget _getTrailing() {
+    return Container(
+      child: Row(children: <Widget>[
+        RaisedButton(child: Text("Edit"), color: Colors.green, onPressed: _onEditPressed),
+        RaisedButton(child: Text("Delete"), color: Colors.red, onPressed: _onDeletePressed),
+
+      ]),
+    );
+  }
+
+  void _resetDate(){}
+  void _delete(){}
+  final renameController = TextEditingController(text:"");
+
+  void _rename() {
+    print(renameController.text);
+  }
+
+  void _showRenameDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Rename -${widget.habit.name}"),
+          content: TextField(
+            controller: renameController,
+          ),
+
+          actions: <Widget>[
+            new FlatButton(
+                child: Text("Confirm"),
+                onPressed: (){
+                  _rename();
+                }
+            ),
+
+            FlatButton(
+              child: Text("Cancel"),
+              onPressed: (){print("cancel");},
+            )
+          ],
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new ListTile(
-      title: Text(widget.habit.name),
-      subtitle: Text(widget.habit.streak.toString() + " Days"),
+    return new ExpansionTile(
+      title: Text(widget.habit.name, textScaleFactor: 1.5,),
+      leading: Text(widget.habit.streak.toString() + " Days"),
+      trailing: RaisedButton(
+          color: Colors.red,
+          child:Text("RIP", style: TextStyle(color: Colors.white),),
+          onPressed: ()=>print("Rip")),
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(flex:4, child: RaisedButton(
+                  child:Text("Rename", style:TextStyle(color:Colors.white)),
+                  color: Colors.green,
+                  onPressed: _onEditPressed)
+              ),
 
+              Spacer(),
+              Expanded(flex:4, child: RaisedButton(
+                  child:Text("Delete", style:TextStyle(color:Colors.white)),
+                  color: Colors.red,
+                  onPressed: _onDeletePressed)
+              ),
+
+            ],
+          ),
+        )
+      ],
+//      leading: RaisedButton(child:Text("Edit"), onPressed: _onEditPressed),
+//      trailing: RaisedButton(child:Text("Delete"), onPressed: _onDeletePressed)
     );
   }
 

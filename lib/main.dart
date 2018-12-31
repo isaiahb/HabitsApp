@@ -130,8 +130,6 @@ class HabitListState extends State<HabitList> {
     for (Habit habit in widget.habits)
       widgets.add(HabitWidget(habit));
 
-    print("got here");
-
     return ListView(
       children: widgets,
       shrinkWrap: true,

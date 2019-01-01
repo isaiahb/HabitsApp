@@ -48,16 +48,55 @@ class _MyHomePageState extends State<MyHomePage> {
   Color get color => _colorOptions[_selectedIndex];
   String get title => _textOptions[_selectedIndex];
 
+  TextEditingController nameController = new TextEditingController();
+
   void _onTap(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  void _createHabit({String name = "Habit Name"}) {
+  void _createHabit(BuildContext context) async {
+    String name;
+    DateTime startingDate;
 
+    Habit habit = await showDialog<Habit>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Add Habit'),
+
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    onPressed: () { Navigator.pop(context, null); },
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    color: Colors.deepOrange,
+                    onPressed: () { Navigator.pop(context, new Habit("Habit")); },
+                    child: const Text('Add', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            )
+
+          ],
+        );
+      }
+    );
+
+    if (habit == null) return;
     setState(() {
-      Habit habit = new Habit(name);
       habits.add(habit);
     });
   }
@@ -79,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       floatingActionButton: new FloatingActionButton(
-        onPressed: _createHabit,
+        onPressed: (){_createHabit(context);},
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),

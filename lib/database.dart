@@ -30,12 +30,10 @@ class DBProvider {
     String path = join(documentsDirectory.path, "TestDB.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-          await db.execute("CREATE TABLE Habit ("
-              "id INTEGER PRIMARY KEY,"
-              "name TEXT,"
-              "dateCreated TEXT,"
-              "lastReset TEXT,"
-              "good BIT"
+          await db.execute("CREATE TABLE Habits ("
+                "id INTEGER PRIMARY KEY,"
+                "good TEXT,"
+                "bad TEXT,"
               ")");
         });
   }

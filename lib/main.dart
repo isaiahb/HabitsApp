@@ -5,10 +5,11 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:datetime_picker_formfield/time_picker_formfield.dart';
 import 'package:intl/intl.dart';
 
+import 'dart:convert';
+
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -31,31 +33,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   int _selectedIndex = 0;
+  final _textOptions = ['Good Habits', 'Bad Habits'];
 
-  final _textOptions = [
-    ('Good Habits'),
-    ('Bad Habits')
-  ];
-  final _colorOptions = [
-    Colors.blue,
-    Colors.deepOrange,
-  ];
-  final _habitsOptions = [
-    List<Habit>(),
-    List<Habit>()
-  ];
-
+  List<List<Habit>> _habitsOptions = [List<Habit>(), List<Habit>()];
+  List<Habit> get goodHabits => _habitsOptions[0];
+  List<Habit> get badHabits => _habitsOptions[1];
   List<Habit> get habits => _habitsOptions[_selectedIndex];
-  Color get color => _colorOptions[_selectedIndex];
   String get title => _textOptions[_selectedIndex];
+
+  String _goodHabitsString() {
+    List<String> strings = new List();
+    for (Habit habit in goodHabits)
+      strings.add(habit.toJson());
+    return jsonEncode(strings);
+  }
+
+  String _badHabitsString() {
+    List<String> strings = new List();
+    for (Habit habit in badHabits)
+      strings.add(habit.toJson());
+    return jsonEncode(strings);
+  }
+
+  List<Habit> _habitListFromJson(String json) {
+    List<Habit> habits = new List();
+    List<dynamic> dynamicList = jsonDecode(json);
+    for (String habitJson in dynamicList)
+      habits.add(Habit.fromJson(habitJson));
+    return habits;
+  }
+
 
   TextEditingController nameController = TextEditingController();
 
   void _onTap(int index) {setState(() => _selectedIndex = index);}
-  void _removeHabit(Habit habit){
-    setState(() => habits.remove(habit));
-  }
+  void _removeHabit(Habit habit) {setState(() => habits.remove(habit));}
 
   void _createHabit(BuildContext context) async {
     Habit habit = await showDialog<Habit>(
@@ -75,7 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
               ),
             ),
-//            _dateWidget(startingDate),
 
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -105,11 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     );
-
     if (habit == null) return;
-    setState(() {
-      habits.add(habit);
-    });
+
+    setState(() => habits.add(habit));
+    print("GOOD: " + _habitListFromJson(_goodHabitsString()).toString());
+    print("BAD: " + _badHabitsString());
   }
 
 

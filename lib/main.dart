@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:habits/models/habit.dart';
 import 'package:habits/views/habit_list_widget.dart';
-
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:datetime_picker_formfield/time_picker_formfield.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(new MyApp());
 
@@ -56,10 +58,36 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _createHabit(BuildContext context) async {
-    String name;
-    DateTime startingDate;
+  Widget _dateWidget(DateTime dateTime) {
+    final dateFormat = DateFormat("EEEE, MMMM d, yyyy 'at' h:mma");
+    DateTime date = DateTime.now();
 
+
+    DateTimePickerFormField dateTimePickerFormField = DateTimePickerFormField(
+      dateOnly: true,
+      initialValue: date,
+      initialDate: date,
+      initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
+      format: dateFormat,
+      decoration: InputDecoration(labelText: 'Date'),
+//      onChanged: (dt) => setState(() => date = dt),
+    );
+//    dateTimePickerFormField.
+
+//    dateTimePickerFormField.onChanged(date);
+
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: DateTimePickerFormField(
+        initialDate: DateTime.now(),
+        format: dateFormat,
+        decoration: InputDecoration(labelText: 'Date'),
+//      onChanged: (dt) => setState(() => date = dt),
+      ),
+    );
+  }
+
+  void _createHabit(BuildContext context) async {
     Habit habit = await showDialog<Habit>(
       context: context,
       builder: (BuildContext context) {
@@ -67,6 +95,18 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Add Habit'),
 
           children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Enter habit name',
+                ),
+
+              ),
+            ),
+//            _dateWidget(startingDate),
+
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -79,11 +119,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: const Text('Cancel'),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.deepOrange,
-                    onPressed: () { Navigator.pop(context, new Habit("Habit")); },
+                    onPressed: () { Navigator.pop(context, new Habit(nameController.text)); },
                     child: const Text('Add', style: TextStyle(color: Colors.white)),
                   ),
                 ),

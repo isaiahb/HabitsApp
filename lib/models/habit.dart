@@ -45,7 +45,7 @@ class Habit {
     return jsonEncode(map);
   }
 
-  int get streak => lastReset.difference(DateTime.now()).inDays;
+  int get streak => DateTime.now().difference(lastReset).inDays;
 
   void resetStreak(){
     lastReset = DateTime.now();

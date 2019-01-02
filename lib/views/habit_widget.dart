@@ -13,52 +13,90 @@ class _HabitWidgetState extends State<HabitWidget> {
   void _onEditPressed() => print("editting");
   void _onDeletePressed() => print("deleting");
 
-  Widget _getTrailing() {
-    return Container(
-      child: Row(children: <Widget>[
-        RaisedButton(child: Text("Edit"), color: Colors.green, onPressed: _onEditPressed),
-        RaisedButton(child: Text("Delete"), color: Colors.red, onPressed: _onDeletePressed),
 
-      ]),
-    );
-  }
-
-  void _resetDate(){}
-  void _delete(){}
   final renameController = TextEditingController(text:"");
 
-  void _rename() {
-    print(renameController.text);
-  }
 
-  void _showRenameDialog(BuildContext context) {
-    showDialog(
+  void _showRenameDialog(BuildContext context) async {
+    renameController.text = widget.habit.name;
+    String name = await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Rename - ${widget.habit.name}"),
-            content: TextField(
+            title: Text("Rename Habit "),//${widget.habit.name}"),
+            content: TextFormField(
+              decoration: InputDecoration(
+              labelText: 'New Name',
+            ),
               controller: renameController,
             ),
 
             actions: <Widget>[
-              new FlatButton(
-                  child: Text("Confirm", style: TextStyle(color:Colors.green)),
-                  onPressed: (){
-                    _rename();
-                  }
-              ),
 
               FlatButton(
                 color: Colors.red,
                 child: Text("Cancel", style: TextStyle(color:Colors.white)),
-                onPressed: (){print("cancel");},
-              )
+                onPressed: (){
+                  Navigator.of(context).pop(widget.habit.name);
+                },
+              ),
+
+              new FlatButton(
+                  color: Colors.black12,
+                  child: Text("Confirm", style: TextStyle(color: Colors.black)),
+                  onPressed: (){
+                    Navigator.of(context).pop(renameController.text);
+
+                  }
+              ),
+
             ],
           );
         }
     );
+    name = name != null ? name : widget.habit.name;
+    setState((){
+      widget.habit.name = name;
+    });
   }
+
+  void _showRipDialog(BuildContext context) async {
+
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Reset Inquired Progress?"),//${widget.habit.name}"),
+            content: Text("Are you sure you want to reset day counter for ${widget.habit.name} ?"),
+
+
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.black12,
+                child: Text("Cancel", style: TextStyle(color:Colors.black)),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              ),
+
+              new FlatButton(
+                  color: Colors.red,
+                  child: Text("Reset", style: TextStyle(color: Colors.white)),
+                  onPressed: (){
+                    widget.habit.resetStreak();
+                    Navigator.of(context).pop();
+                  }
+              ),
+
+            ],
+          );
+        }
+    );
+
+    setState(() {});
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +106,7 @@ class _HabitWidgetState extends State<HabitWidget> {
       trailing: RaisedButton(
           color: Colors.red,
           child:Text("RIP", style: TextStyle(color: Colors.white),),
-          onPressed: ()=>print("Rip")
+          onPressed: ()=> _showRipDialog(context)
       ),
 
       children: <Widget>[

@@ -5,8 +5,9 @@ import 'package:habits/views/habit_widget.dart';
 class HabitList extends StatefulWidget {
   final List<Habit> habits;
   final String title;
+  final Function removeHabit;
 
-  HabitList({this.habits = const [], this.title= "Habit Name"});
+  HabitList({this.habits = const [], this.title= "Habit Name", this.removeHabit});
   @override
   State<StatefulWidget> createState()=> HabitListState();
 

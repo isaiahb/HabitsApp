@@ -46,7 +46,9 @@ class DBProvider {
     //get the biggest id in the table
     var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Habits");
     int id = table.first["id"];
-    if (id >= 1) return null;
+    if (id != null)
+      if (id >= 1) return null;
+
     //insert to the table using the new id
     var raw = await db.rawInsert(
         "INSERT Into Habits (id,good,bad)"

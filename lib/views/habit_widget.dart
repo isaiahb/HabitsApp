@@ -3,16 +3,14 @@ import "package:habits/models/habit.dart";
 
 class HabitWidget extends StatefulWidget {
   final Habit habit;
-  HabitWidget(this.habit);
+  final Function removeHabit;
+
+  HabitWidget(this.habit, this.removeHabit);
   @override
   State<StatefulWidget> createState()=> _HabitWidgetState();
 }
 
 class _HabitWidgetState extends State<HabitWidget> {
-
-  void _onEditPressed() => print("editting");
-  void _onDeletePressed() => print("deleting");
-
 
   final renameController = TextEditingController(text:"");
 
@@ -59,9 +57,7 @@ class _HabitWidgetState extends State<HabitWidget> {
       widget.habit.name = name;
     });
   }
-
   void _showRipDialog(BuildContext context) async {
-
     await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -92,11 +88,38 @@ class _HabitWidgetState extends State<HabitWidget> {
           );
         }
     );
-
     setState(() {});
-
   }
+  void _showDeleteDialog(BuildContext context) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete Habit?"),//${widget.habit.name}"),
+            content: Text("Are you sure you want to Delete ${widget.habit.name} ?"),
 
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.black12,
+                child: Text("Cancel", style: TextStyle(color:Colors.black)),
+                onPressed: () => Navigator.of(context).pop()
+              ),
+
+              new FlatButton(
+                  color: Colors.red,
+                  child: Text("Delete", style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    widget.removeHabit(widget.habit);
+                    Navigator.of(context).pop();
+                  }
+              ),
+
+            ],
+          );
+        }
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +129,7 @@ class _HabitWidgetState extends State<HabitWidget> {
       trailing: RaisedButton(
           color: Colors.red,
           child:Text("RIP", style: TextStyle(color: Colors.white),),
-          onPressed: ()=> _showRipDialog(context)
+          onPressed: () => _showRipDialog(context)
       ),
 
       children: <Widget>[
@@ -118,14 +141,14 @@ class _HabitWidgetState extends State<HabitWidget> {
               Expanded(flex:4, child: RaisedButton(
                   child:Text("Rename", style:TextStyle(color:Colors.white)),
                   color: Colors.green,
-                  onPressed: ()=> _showRenameDialog(context)
+                  onPressed: () => _showRenameDialog(context)
               )),
 
               Spacer(),
               Expanded(flex:4, child: RaisedButton(
                   child:Text("Delete", style:TextStyle(color:Colors.white)),
                   color: Colors.red,
-                  onPressed: _onDeletePressed)
+                  onPressed: () => _showDeleteDialog(context))
               ),
 
             ],

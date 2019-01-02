@@ -19,7 +19,7 @@ class HabitListState extends State<HabitList> {
   Widget _getWidgetList() {
     List<HabitWidget> widgets = new List();
     for (Habit habit in widget.habits)
-      widgets.add(HabitWidget(habit));
+      widgets.add(HabitWidget(habit, widget.removeHabit));
 
     return ListView(
       children: widgets,

@@ -52,39 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   TextEditingController nameController = new TextEditingController();
 
-  void _onTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  Widget _dateWidget(DateTime dateTime) {
-    final dateFormat = DateFormat("EEEE, MMMM d, yyyy 'at' h:mma");
-    DateTime date = DateTime.now();
-
-
-    DateTimePickerFormField dateTimePickerFormField = DateTimePickerFormField(
-      dateOnly: true,
-      initialValue: date,
-      initialDate: date,
-      initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
-      format: dateFormat,
-      decoration: InputDecoration(labelText: 'Date'),
-//      onChanged: (dt) => setState(() => date = dt),
-    );
-//    dateTimePickerFormField.
-
-//    dateTimePickerFormField.onChanged(date);
-
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: DateTimePickerFormField(
-        initialDate: DateTime.now(),
-        format: dateFormat,
-        decoration: InputDecoration(labelText: 'Date'),
-//      onChanged: (dt) => setState(() => date = dt),
-      ),
-    );
+  void _onTap(int index) {setState(() => _selectedIndex = index);}
+  void _removeHabit(Habit habit){
+    setState(() => habits.remove(habit));
   }
 
   void _createHabit(BuildContext context) async {
@@ -154,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       body: new Center(
-        child: HabitList(title: title, habits: habits)
+        child: HabitList(title: title, habits: habits, removeHabit: _removeHabit)
       ),
 
 

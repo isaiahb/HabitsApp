@@ -4,6 +4,7 @@ class Habit {
   DateTime lastReset;
   List<dynamic> resetDates; //should be a string, but json lib can only decode list as dynamic
   String name;
+  bool good;
 
   List<DateTime> get resetDateTimeList {
     List<DateTime> list = new List();
@@ -13,7 +14,7 @@ class Habit {
     return list;
   }
 
-  Habit(this.name, { this.dateCreated, this.lastReset, this.resetDates}) {
+  Habit(this.name, { this.dateCreated, this.lastReset, this.resetDates, this.good}) {
     DateTime now = DateTime.now();
     this.dateCreated = dateCreated != null ? dateCreated : now;
     this.lastReset = lastReset != null ? lastReset : now;

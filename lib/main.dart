@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Color get color => _colorOptions[_selectedIndex];
   String get title => _textOptions[_selectedIndex];
 
-  TextEditingController nameController = new TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   void _onTap(int index) {setState(() => _selectedIndex = index);}
   void _removeHabit(Habit habit){
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.deepOrange,
-                    onPressed: () { Navigator.pop(context, new Habit(nameController.text)); },
+                    onPressed: () { Navigator.pop(context, Habit(nameController.text, good: _selectedIndex == 0)); },
                     child: const Text('Add', style: TextStyle(color: Colors.white)),
                   ),
                 ),

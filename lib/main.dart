@@ -44,6 +44,20 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Habit> get habits => _habitsOptions[_selectedIndex];
   String get title => _textOptions[_selectedIndex];
 
+  void loadHabits() async {
+    List<List<Habit>> habits = await DBProvider.provider.getHabits();
+    setState(() {
+      _habitsOptions[0] = habits[0];
+      _habitsOptions[1] = habits[1];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadHabits();
+  }
+
   String _goodHabitsString() {
     List<String> strings = new List();
     for (Habit habit in goodHabits)
@@ -70,7 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nameController = TextEditingController();
 
   void _onTap(int index) {setState(() => _selectedIndex = index);}
-  void _removeHabit(Habit habit) {setState(() => habits.remove(habit));}
+  void _removeHabit(Habit habit) {
+    setState(() => habits.remove(habit));
+    DBProvider.provider.updateHabits(_habitsOptions);
+  }
 
   void _createHabit(BuildContext context) async {
     Habit habit = await showDialog<Habit>(
@@ -170,6 +187,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     );
   }
+
+
 
 }
 

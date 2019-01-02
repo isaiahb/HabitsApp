@@ -6,6 +6,7 @@ import 'package:datetime_picker_formfield/time_picker_formfield.dart';
 import 'package:intl/intl.dart';
 
 import 'dart:convert';
+import "database.dart";
 
 void main() => runApp(new MyApp());
 
@@ -119,10 +120,10 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     );
     if (habit == null) return;
-
     setState(() => habits.add(habit));
-    print("GOOD: " + _habitListFromJson(_goodHabitsString()).toString());
-    print("BAD: " + _badHabitsString());
+
+    await DBProvider.provider.updateHabits(_habitsOptions);
+    print((await DBProvider.provider.getHabits()).toString());
   }
 
 

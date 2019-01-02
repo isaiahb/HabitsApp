@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:habits/models/habit.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -33,9 +35,74 @@ class DBProvider {
           await db.execute("CREATE TABLE Habits ("
                 "id INTEGER PRIMARY KEY,"
                 "good TEXT,"
-                "bad TEXT,"
+                "bad TEXT"
               ")");
         });
   }
 
+  //if returns null, habit already exist and cannot create a new one
+  _newHabits() async {
+    final db = await database;
+    //get the biggest id in the table
+    var table = await db.rawQuery("SELECT MAX(id)+1 as id FROM Habits");
+    int id = table.first["id"];
+    if (id >= 1) return null;
+    //insert to the table using the new id
+    var raw = await db.rawInsert(
+        "INSERT Into Habits (id,good,bad)"
+            " VALUES (?,?,?)",
+        [id, "[]", "[]"]);
+    return raw;
+  }
+
+  Future <List<List<Habit>>> getHabits() async {
+    final db = await database;
+    //get the biggest id in the table
+    var table = await db.rawQuery("SELECT MAX(id) as id FROM Habits");
+    int id = table.first["id"];
+
+    if (id == null) {
+      await _newHabits();
+      return getHabits();
+    }
+
+    var res = await db.query("Habits", where: "id = ?", whereArgs: [id]);
+
+    List<Habit> good = _habitListFromJson(res.first["good"]);
+    List<Habit> bad = _habitListFromJson(res.first["bad"]);
+
+    return [good, bad];
+  }
+
+  Future<bool> updateHabits(List<List<Habit>> newHabits) async {
+    final db = await database;
+
+    List<Habit> good = newHabits[0];
+    List<Habit> bad = newHabits[1];
+
+    Map <String, dynamic> map = {"good": _habitListToJson(good), "bad":_habitListToJson(bad)};
+
+    var res = await db.update("Habits", map,
+        where: "id = 1");//, whereArgs: [newClient.id]);
+
+    return true;
+  }
+
+
+}
+
+String _habitListToJson(List<Habit> habits) {
+  List<String> strings = new List();
+  for (Habit habit in habits)
+    strings.add(habit.toJson());
+  return jsonEncode(strings);
+}
+
+
+List<Habit> _habitListFromJson(String json) {
+  List<Habit> habits = new List();
+  List<dynamic> dynamicList = jsonDecode(json);
+  for (String habitJson in dynamicList)
+    habits.add(Habit.fromJson(habitJson));
+  return habits;
 }
